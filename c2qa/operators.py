@@ -1,8 +1,6 @@
 import numpy
 import scipy.sparse
 import scipy.sparse.linalg
-import pdb
-
 
 xQB = numpy.array([[0, 1], [1, 0]])
 yQB = numpy.array([[0, -1j], [1j, 0]])
@@ -265,7 +263,7 @@ class CVOperators:
             numpy.conjugate(theta) * self.get_a(cutoff)
         )
         arg = scipy.sparse.kron(zQB, argm)
-
+        arg = scipy.sparse.csc(arg)
         return scipy.sparse.linalg.expm(arg)
 
     def cbs(self, theta, cutoff_a, cutoff_b):
@@ -479,7 +477,6 @@ class CVOperators:
         return scipy.sparse.linalg.expm(arg)
 
     def testqubitorderf(self, phi):
-
         arg = 1j * phi * scipy.sparse.kron(xQB, idQB)
         return scipy.sparse.linalg.expm(arg)
 
