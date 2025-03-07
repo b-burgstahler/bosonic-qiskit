@@ -489,7 +489,7 @@ def simulate(
     if add_save_statevector:
         sim_circuit.data.pop()  # Clean up by popping off the SaveStatevector instruction
 
-    if return_fockcounts and add_save_statevector:
+    if return_fockcounts:
         try:
             fockcounts = counts_to_fockcounts(sim_circuit, result, result.get_counts())
             return (state, result, fockcounts)
