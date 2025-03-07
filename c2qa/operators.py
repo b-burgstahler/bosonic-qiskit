@@ -262,7 +262,7 @@ class CVOperators:
         argm = (theta * self.get_a_dag(cutoff)) - (
             numpy.conjugate(theta) * self.get_a(cutoff)
         )
-        arg = scipy.sparse.kron(zQB, argm)
+        arg = scipy.sparse.kron(zQB, argm).tocsc()
         return scipy.sparse.linalg.expm(arg)
 
     def cbs(self, theta, cutoff_a, cutoff_b):
