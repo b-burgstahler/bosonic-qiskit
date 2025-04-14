@@ -5,10 +5,11 @@ import numpy as np
 import qiskit
 import qiskit.quantum_info
 import qiskit_aer
-from qiskit.quantum_info import DensityMatrix, Statevector
-
 from c2qa import CVCircuit
 from c2qa.discretize import discretize_circuits
+from qiskit.quantum_info import DensityMatrix, Statevector
+
+from codetiming import Timer
 
 
 def flatten(l):
@@ -399,7 +400,7 @@ def get_probabilities(result: qiskit.result.Result):
 
     return probs
 
-
+@Timer("Simulate", logger=None)
 def simulate(
     cvcircuit: CVCircuit,
     shots: int = 1024,
@@ -464,16 +465,17 @@ def simulate(
 
     # Transpile for simulator
     simulator = qiskit_aer.AerSimulator()
-    circuit_compiled = qiskit.transpile(circuit_compiled, simulator)
+    with Timer("Transpile", logger=None):
+        circuit_compiled = qiskit.transpile(circuit_compiled, simulator)
 
     # Run and get statevector
-    result = simulator.run(
-        circuit_compiled,
-        shots=shots,
-        max_parallel_threads=max_parallel_threads,
-        noise_model=noise_model,
-    ).result()
-
+    with Timer("Run", logger=None):
+        result = simulator.run(
+            circuit_compiled,
+            shots=shots,
+            max_parallel_threads=max_parallel_threads,
+            noise_model=noise_model,
+        ).result()
     # The user may have added their own circuit.save_statevector
     state = None
     if len(result.results):
