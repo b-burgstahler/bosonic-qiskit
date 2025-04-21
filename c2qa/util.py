@@ -9,6 +9,7 @@ from c2qa import CVCircuit
 from c2qa.discretize import discretize_circuits
 from qiskit.quantum_info import DensityMatrix, Statevector
 
+from codetiming._timer import fTimer
 
 
 def flatten(l):
@@ -399,6 +400,7 @@ def get_probabilities(result: qiskit.result.Result):
 
     return probs
 
+@fTimer()
 def simulate(
     cvcircuit: CVCircuit,
     shots: int = 1024,
