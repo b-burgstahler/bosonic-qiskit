@@ -400,7 +400,7 @@ def get_probabilities(result: qiskit.result.Result):
 
     return probs
 
-@fTimer()
+@fTimer(logger = None)
 def simulate(
     cvcircuit: CVCircuit,
     shots: int = 1024,
