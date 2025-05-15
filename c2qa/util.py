@@ -4,12 +4,12 @@ import warnings
 import numpy as np
 import qiskit
 import qiskit.quantum_info
-from qiskit.quantum_info import Statevector, DensityMatrix
 import qiskit_aer
-
-
 from c2qa import CVCircuit
 from c2qa.discretize import discretize_circuits
+from qiskit.quantum_info import DensityMatrix, Statevector
+
+from codetiming._timer import fTimer
 
 
 def flatten(l):
@@ -68,8 +68,9 @@ def cv_ancilla_fock_measure(circuit, list_qumodes_to_sample: list, qmr_number: i
     results_integers = np.zeros([len(list_qumodes_to_sample)])
     for j in range(len(list_qumodes_to_sample)):
         binary_number = full_set_of_binary[
-            j
-            * circuit.num_qubits_per_qumode : ((j + 1) * circuit.num_qubits_per_qumode)
+            j * circuit.num_qubits_per_qumode : (
+                (j + 1) * circuit.num_qubits_per_qumode
+            )
         ]
         print(binary_number)
         results_integers[-(j + 1)] = int(binary_number, 2)
@@ -242,9 +243,8 @@ def counts_to_fockcounts(
                 if index == min(qumode):
                     fock_decimal = str(
                         int(
-                            qubit_key[
-                                max_iter_index
-                                - max(qumode) : max_iter_index
+                            key[
+                                max_iter_index - max(qumode) : max_iter_index
                                 - min(qumode)
                                 + 1
                             ],
@@ -410,7 +410,7 @@ def get_probabilities(result: qiskit.result.Result):
 
     return probs
 
-
+@fTimer(logger = None)
 def simulate(
     cvcircuit: CVCircuit,
     shots: int = 1024,
@@ -484,7 +484,6 @@ def simulate(
         max_parallel_threads=max_parallel_threads,
         noise_model=noise_model,
     ).result()
-
     # The user may have added their own circuit.save_statevector
     state = None
     if len(result.results):
@@ -500,7 +499,7 @@ def simulate(
     if add_save_statevector:
         sim_circuit.data.pop()  # Clean up by popping off the SaveStatevector instruction
 
-    if return_fockcounts and add_save_statevector:
+    if return_fockcounts:
         try:
             fockcounts = counts_to_fockcounts(sim_circuit, result)
             return (state, result, fockcounts)
@@ -731,7 +730,6 @@ def fockmap(matrix, fock_input, fock_output, amplitude=[]):
 
     # 3. List datatype input/output/amp args. Lengths of all must match
     elif len(fock_input) == len(fock_output) == len(amplitude):
-
         for i in range(len(fock_input)):
             if matrix[fock_output[i], fock_input[i]] != 0:
                 print(
