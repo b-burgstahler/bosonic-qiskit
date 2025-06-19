@@ -241,8 +241,9 @@ def counts_to_fockcounts(
                 if index == min(qumode):
                     fock_decimal = str(
                         int(
-                            key[
-                                max_iter_index - max(qumode) : max_iter_index
+                            qubit_key[
+                                max_iter_index
+                                - max(qumode) : max_iter_index
                                 - min(qumode)
                                 + 1
                             ],
