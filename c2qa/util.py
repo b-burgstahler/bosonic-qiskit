@@ -9,6 +9,8 @@ from c2qa import CVCircuit
 from c2qa.discretize import discretize_circuits
 from qiskit.quantum_info import DensityMatrix, Statevector
 
+from codetiming import Timer
+
 
 def flatten(l):
     return [item for sublist in l for item in sublist]
@@ -473,15 +475,17 @@ def simulate(
 
     # Transpile for simulator
     simulator = qiskit_aer.AerSimulator()
-    circuit_compiled = qiskit.transpile(circuit_compiled, simulator)
+    with Timer(name="transpile (prep)", logger=None):
+        circuit_compiled = qiskit.transpile(circuit_compiled, simulator)
 
     # Run and get statevector
-    result = simulator.run(
-        circuit_compiled,
-        shots=shots,
-        max_parallel_threads=max_parallel_threads,
-        noise_model=noise_model,
-    ).result()
+    with Timer(name="aer (run)", logger=None):
+        result = simulator.run(
+            circuit_compiled,
+            shots=shots,
+            max_parallel_threads=max_parallel_threads,
+            noise_model=noise_model,
+        ).result()
     # The user may have added their own circuit.save_statevector
     state = None
     if len(result.results):
