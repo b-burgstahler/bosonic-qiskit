@@ -474,7 +474,7 @@ def simulate(
         circuit_compiled = sim_circuit
 
     # Transpile for simulator
-    simulator = qiskit_aer.AerSimulator()
+    simulator = qiskit_aer.AerSimulator(device="GPU", method="statevector")
     with Timer(name="transpile (prep)", logger=None):
         circuit_compiled = qiskit.transpile(circuit_compiled, simulator)
 
