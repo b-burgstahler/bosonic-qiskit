@@ -6,6 +6,7 @@ from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.circuit import Gate
 from qiskit.circuit.library import UnitaryGate
 from qiskit.circuit.parameter import ParameterExpression
+from codetiming import fTimer
 
 
 class ParameterizedUnitaryGate(Gate):
@@ -47,6 +48,7 @@ class ParameterizedUnitaryGate(Gate):
         self.discretized_param_indices = discretized_param_indices
         self.cutoffs = cutoffs
 
+    @fTimer(logger=None)
     def __array__(self, dtype=None):
         """Call the operator function to build the array using the bound parameter values."""
         # return self.op_func(*map(complex, self.params)).toarray()
@@ -105,6 +107,7 @@ class ParameterizedUnitaryGate(Gate):
         else:
             return super().validate_parameter(parameter)
 
+    @fTimer(logger=None)
     def calculate_matrix(
         self, current_step: int = 1, total_steps: int = 1, keep_state: bool = False
     ):
