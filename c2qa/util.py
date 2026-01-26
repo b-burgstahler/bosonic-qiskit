@@ -422,6 +422,7 @@ def simulate(
     noise_passes=None,
     max_parallel_threads: int = 0,
     discretize: bool = False,
+    device: str = "CPU",
 ):
     """Convenience function to simulate using the given backend.
 
@@ -474,7 +475,7 @@ def simulate(
         circuit_compiled = sim_circuit
 
     # Transpile for simulator
-    simulator = qiskit_aer.AerSimulator(device="GPU", method="statevector")
+    simulator = qiskit_aer.AerSimulator(device=device, method="statevector")
     with Timer(name="transpile (prep)", logger=None):
         circuit_compiled = qiskit.transpile(circuit_compiled, simulator)
 
